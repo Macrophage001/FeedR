@@ -1,17 +1,70 @@
+:root {
+    --feedr-text-color: #fff;
+}
+
 .FeedR {
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    place-items: center;
+}
+
+.feed-reel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#start-feedr-btn {
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 32px;
+}
+#start-feedr-btn:hover {
+    transition: 250ms ease;
+    text-shadow: 0 0 4px #fff;
+    transform: scale(105%);
+}
+#start-feedr-btn:active {
+    transition: 250ms ease;
+    text-shadow: 0 0 2px #000;
+    transform: scale(100%);
 }
 
 .feedr-reel {
-    position: absolute;
     animation: pop-in 250ms ease-in-out;
-    color: red;
+    color: var(--feedr-text-color);
 }
-.past-feed {
-    position: absolute;
+.past-feeds {
+    position: relative;
     top: -10px;
-    color: #353535;
+
+    width: 8rem;
+    height: 9rem;
+
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
+.past-feeds:hover {
+    transition: 250ms ease;
+    box-shadow: inset 0px -8px 8px -8px #000;
+}
+
+.past-feeds ul li {
+    list-style: none;
+    color: #8585854d;
+    text-align: center;
+
+    font-size: 1.2rem;
+}
+
 @keyframes pop-in {
     0% {
         transform: scale(0%);
