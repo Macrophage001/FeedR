@@ -1,16 +1,46 @@
 :root {
-    --feedr-text-color: #fff;
+    --feedr-window-color: #313131;
+    --feedr-text-color: blanchedalmond;
 }
 
 .FeedR {
     position: absolute;
-    top: 50%;
+    top: 35%;
     left: 50%;
 
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -35%);
     display: grid;
     grid-template-rows: repeat(2, auto);
     place-items: center;
+
+    background-color: var(--feedr-window-color);
+    border-radius: 10px;
+
+    padding: 2.5rem;
+}
+
+#url-textbox {
+    background: none;
+    border: none;
+    position: relative;
+    bottom: 1rem;
+
+    /* margin: 2rem 2rem 0rem 2rem; */
+
+    padding: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+
+    color: blanchedalmond;
+
+    box-shadow: inset 0 0 4px black;
+}
+
+.smooth-hidden-animation {
+    animation: smooth-hide 250ms ease forwards;
+}
+.smooth-visible-animation {
+    animation: smooth-visible 250ms ease forwards;
 }
 
 .feed-reel {
@@ -18,43 +48,52 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    min-width: 8rem;
+    max-height: 9rem;
 }
-#start-feedr-btn {
+
+.feedr-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#feedr-btn {
     cursor: pointer;
     background: none;
     border: none;
     color: #fff;
     font-weight: bold;
     font-size: 32px;
+    margin: 1rem 0.5rem;
 }
-#start-feedr-btn:hover {
+#feedr-btn:hover {
     transition: 250ms ease;
     text-shadow: 0 0 4px #fff;
     transform: scale(105%);
 }
-#start-feedr-btn:active {
+#feedr-btn:active {
     transition: 250ms ease;
     text-shadow: 0 0 2px #000;
     transform: scale(100%);
 }
 
-.feedr-reel {
-    animation: pop-in 250ms ease-in-out;
+.current-word {
     color: var(--feedr-text-color);
 }
+
 .past-feeds {
     position: relative;
-    top: -10px;
-
-    width: 8rem;
-    height: 9rem;
-
-    overflow-x: hidden;
-    overflow-y: scroll;
+    min-width: 12.5rem;
+    min-height: 9rem;
+    overflow: hidden;
+    border-radius: 10px;
 }
 .past-feeds:hover {
     transition: 250ms ease;
-    box-shadow: inset 0px -8px 8px -8px #000;
+    box-shadow: 
+        inset 0px -15px 13px -15px #111, 
+        inset 0px 15px 13px -15px #111; 
 }
 
 .past-feeds ul li {
@@ -74,5 +113,23 @@
     }
     100% {
         transform: scale(100%);
+    }
+}
+@keyframes smooth-hide {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}
+@keyframes smooth-visible {
+    0% {
+        opacity: 0;
+        display: block;
+    }
+    100% {
+        opacity: 1;
     }
 }

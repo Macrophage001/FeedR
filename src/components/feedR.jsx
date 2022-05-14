@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './feedR.css';
 
+import FeedReel from './feedReel';
+import FeedrControls from './feedrControls';
+import InputForm from './inputForm';
+
 const punctuationDelaySystem = (() => {
     let publicAPIs = {};
 
@@ -15,12 +19,16 @@ const punctuationDelaySystem = (() => {
         if (word.includes(',')) finalDelay += delayMapping[','];
         return finalDelay;
     }
+    publicAPIs.addWordLengthDelay = (baseDelay, word) => {
+        return word.length * baseDelay;
+    }
 
     return publicAPIs;
 })();
 
 function FeedR() {
     const baseDelay = 350;
+    const baseWordDelay = 35;
 
     const [novelTextWordArrays, setNovelTextWordArrays] = useState([]);
     const [currentWord, setCurrentWord] = useState('');
@@ -30,39 +38,66 @@ function FeedR() {
     const [feedrTimeout, setFeedrTimeout] = useState(null);
     const [isFeeding, setIsFeeding] = useState(false);
     const [isReset, setIsReset] = useState(false);
+    const [areWordsLoaded, setAreWordsLoaded] = useState(false);
+    const [url, setUrl] = useState('');
 
     const pastFeed = document.querySelector('.past-feeds');
+    const currentWordElement = document.querySelector('.current-word');
 
-    const loadWords = async () => {
+    const startFeed = async () => {
         if (isReset) {
             setIndex(0);
             setPastWords([]);
+            setCurrentWord('');
+            setIsReset(false);
+            setAreWordsLoaded(false);
         }
-        let response = await axios.get(`/retrieve?url=https://lightnovelreader.org/historys-strongest-senior-brother/chapter-1`);
+        // const backupUrl = 'https://lightnovelreader.org/historys-strongest-senior-brother/chapter-1';
+
+        let response = await axios.get(`/retrieve?url=${url}`);
+
         setNovelTextWordArrays(response.data.wordArr);
-        setIsFeeding(!isFeeding);
+
+        setIsFeeding(true);
+        setAreWordsLoaded(true);
+    }
+    const pauseFeed = () => {
+        if (areWordsLoaded) {
+            setIsFeeding(false);
+        }
+    }
+    const resumeFeed = () => {
+        if (areWordsLoaded) {
+            setIsFeeding(true);
+        }
     }
 
     const updateFeedr = () => {
         if (isFeeding) {
-            pastFeed && pastFeed.scrollBy({
-                top: 1000,
-                left: 0,
-                behavior: 'smooth'
-            });
+            pastFeed
+                && pastFeed.scrollBy({
+                    top: 1000,
+                    left: 0,
+                    behavior: 'smooth'
+                });
 
             clearTimeout(feedrTimeout);
             setFeedrTimeout(setTimeout(() => {
                 let newPastWords = pastWords;
                 newPastWords.push(currentWord);
                 setPastWords(newPastWords);
-                console.log(pastWords);
 
                 let word = novelTextWordArrays[index];
+
                 setCurrentWord(word);
+                currentWordElement.classList.remove('pop-in-animation');
+
                 setIndex(index + 1);
-                setDelay(baseDelay + punctuationDelaySystem.addPunctuationDelay(word));
-                
+                setDelay(baseDelay + punctuationDelaySystem.addPunctuationDelay(word) + punctuationDelaySystem.addWordLengthDelay(baseWordDelay, word));
+
+                let t = setTimeout(() => {
+                    currentWordElement.classList.add('pop-in-animation');
+                }, delay / 2);
             }, delay));
         } else {
             clearTimeout(feedrTimeout);
@@ -71,19 +106,21 @@ function FeedR() {
 
     useEffect(() => {
         updateFeedr();
-    }, [index, delay, novelTextWordArrays,]);
+    }, [index, delay, novelTextWordArrays]);
 
     return (
         <div className="FeedR">
-            <div className="feed-reel">
-                <div className="past-feeds">
-                    <ul>
-                        {pastWords && pastWords.map(word => <li>{word}</li>)}
-                    </ul>
-                </div>
-                <h2 className='feedr-reel'>{currentWord}</h2>
-            </div>
-            <button id='start-feedr-btn' style={ isFeeding ? { transform: 'rotateZ(90deg)' } : { transform: 'rotateZ(0deg)' } } onClick={() => loadWords()}>{ isFeeding ?  '=' : '>' }</button>
+            <InputForm url={url} setUrl={setUrl} isFeeding={isFeeding} />
+            <FeedReel currentWord={currentWord} pastWords={pastWords} />
+            <FeedrControls
+                startFeed={ startFeed }
+                pauseFeed={ pauseFeed }
+                resumeFeed={ resumeFeed }
+                resetFeed={() => {
+                    setIsReset(true);
+                    startFeed();
+                }} 
+                isFeeding={isFeeding} />
         </div>
     );
 }
