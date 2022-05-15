@@ -42,7 +42,6 @@ function FeedR() {
     const [url, setUrl] = useState('');
 
     const pastFeed = document.querySelector('.past-feeds');
-    const currentWordElement = document.querySelector('.current-word');
 
     const startFeed = async () => {
         if (isReset) {
@@ -90,14 +89,9 @@ function FeedR() {
                 let word = novelTextWordArrays[index];
 
                 setCurrentWord(word);
-                currentWordElement.classList.remove('pop-in-animation');
 
                 setIndex(index + 1);
                 setDelay(baseDelay + punctuationDelaySystem.addPunctuationDelay(word) + punctuationDelaySystem.addWordLengthDelay(baseWordDelay, word));
-
-                let t = setTimeout(() => {
-                    currentWordElement.classList.add('pop-in-animation');
-                }, delay / 2);
             }, delay));
         } else {
             clearTimeout(feedrTimeout);
