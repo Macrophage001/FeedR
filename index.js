@@ -20,7 +20,7 @@ let urlScraperMap = [];
         files.forEach(file => {
             let mapping = require(path.join(__dirname, process.env.MAPPING_MODULE_DIRECTORY, file));
             if (mapping !== undefined && mappingValidityCheck(mapping.url, mapping.decoder)) {
-                console.log('Mapping Found!: ', mapping);
+                // console.log('Mapping Found!: ', mapping);
                 urlScraperMap.push( mapping );
             }
             else {
@@ -31,17 +31,25 @@ let urlScraperMap = [];
 })();
 
 
+const getValidMapping = (url) => urlScraperMap.filter(mapping => url.includes(mapping.url))[0];
 const getValidDecoder = (url) => urlScraperMap.filter(mapping => url.includes(mapping.url))[0].decoder;
 
 app.get('/retrieve', async (req, resp) => {
     let url = req.query.url;
     let response = await axios.get(url);
-    let decoder = getValidDecoder(url);
+    let mapping = getValidMapping(url);
 
-    let wordArr = decoder(response);
-    console.log(wordArr);
+    console.log(mapping);
 
-    resp.send({ wordArr: decoder(response) });
+    let wordArr = mapping.decoder(response);
+    let instructions = mapping.instructions;
+
+    resp.send({ wordArr, instructions });
 });
+
+app.post('/retrieveFile', (req, resp) => {
+    console.log(req);
+});
+
 
 app.listen(port, () => console.log('Listening on port: ' + port));

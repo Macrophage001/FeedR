@@ -1,7 +1,7 @@
 import React from 'react'
 
 function FeedrControls(props) {
-    const { startFeed, pauseFeed, resumeFeed, isFeeding, resetFeed } = props;
+    const { startFeed, pauseFeed, isFeeding, resetFeed } = props;
 
     return (
         <div className="feedr-controls">

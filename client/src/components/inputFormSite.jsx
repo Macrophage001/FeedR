@@ -1,6 +1,6 @@
 import React from 'react'
 
-function InputForm(props) {
+function InputFormSite(props) {
     const { isFeeding, url, setUrl } = props;
 
     return (
@@ -10,4 +10,4 @@ function InputForm(props) {
     )
 }
 
-export default InputForm
+export default InputFormSite

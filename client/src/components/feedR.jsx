@@ -4,7 +4,8 @@ import './feedR.css';
 
 import FeedReel from './feedReel';
 import FeedrControls from './feedrControls';
-import InputForm from './inputForm';
+import InputFormSite from './inputFormSite';
+import InputFormFile from './inputFormFile';
 
 const punctuationDelaySystem = (() => {
     let publicAPIs = {};
@@ -12,7 +13,8 @@ const punctuationDelaySystem = (() => {
     let delayMapping = {
         '.': 500,
         ',': 300
-    };
+    }
+
     publicAPIs.addPunctuationDelay = (word) => {
         let finalDelay = 0;
         if (word.includes('.')) finalDelay += delayMapping['.'];
@@ -40,10 +42,13 @@ function FeedR() {
     const [isReset, setIsReset] = useState(false);
     const [areWordsLoaded, setAreWordsLoaded] = useState(false);
     const [url, setUrl] = useState('');
+    const [file, setFile] = useState(null);
 
+    const root = document.querySelector(':root');
     const pastFeed = document.querySelector('.past-feeds');
+    const currentWordElement = document.querySelector('.current-word');
 
-    const startFeed = async () => {
+    const startFeed = async (flag) => {
         if (isReset) {
             setIndex(0);
             setPastWords([]);
@@ -53,7 +58,18 @@ function FeedR() {
         }
         // const backupUrl = 'https://lightnovelreader.org/historys-strongest-senior-brother/chapter-1';
 
-        let response = await axios.get(`/retrieve?url=${url}`);
+        let response = null;
+        switch (flag) {
+            case 0:
+                response = await axios.get(`/retrieve?url=${url}`);
+                break;
+            case 1:
+                response = await axios.post(`/retrieveFile`, { file });
+                break;
+            default:
+                console.error('Invalid request!');
+                break;
+        }
 
         setNovelTextWordArrays(response.data.wordArr);
 
@@ -98,23 +114,73 @@ function FeedR() {
         }
     }
 
+    const setFontSize = (fontSize) => {
+        root.style.setProperty('--feedr-font-size', `${fontSize}px`);
+    }
+
     useEffect(() => {
         updateFeedr();
     }, [index, delay, novelTextWordArrays]);
 
     return (
         <div className="FeedR">
-            <InputForm url={url} setUrl={setUrl} isFeeding={isFeeding} />
+            <InputFormSite url={url} setUrl={setUrl} isFeeding={isFeeding} />
+            {/* <InputFormFile setFile={setFile} onFileUploaded={() => startFeed(1)} /> */}
             <FeedReel currentWord={currentWord} pastWords={pastWords} />
             <FeedrControls
-                startFeed={ startFeed }
-                pauseFeed={ pauseFeed }
-                resumeFeed={ resumeFeed }
+                startFeed={() => startFeed(0)}
+                pauseFeed={pauseFeed}
                 resetFeed={() => {
                     setIsReset(true);
                     startFeed();
-                }} 
+                }}
                 isFeeding={isFeeding} />
+            <div className="feedr-options-menu">
+                <div className="feedr-font-size">
+                    <div className="feedr-font-controls" onChange={ (e) => setFontSize(e.target.value) }>
+                        <p>A<span>-</span></p>
+                        <ul>
+                            <li>
+                                <input type="radio" name="font-size" value={14} />
+                                <p>14</p>
+                            </li>
+                            <li>
+                                <input type="radio" name="font-size" value={16} />
+                                <p>16</p>
+                            </li>
+                            <li>
+                                <input type="radio" name="font-size" value={18} />
+                                <p>18</p>
+                            </li>
+                            <li>
+                                <input type="radio" name="font-size" value={20} />
+                                <p>20</p>
+                            </li>
+                            <li>
+                                <input type="radio" name="font-size" value={22} />
+                                <p>20</p>
+                            </li>
+                            <li>
+                                <input type="radio" name="font-size" value={24} />
+                                <p>22</p>
+                            </li>
+                            <li>
+                                <input type="radio" name="font-size" value={26} />
+                                <p>24</p>
+                            </li>
+                            <li>
+                                <input type="radio" name="font-size" value={28} />
+                                <p>26</p>
+                            </li>
+                            <li>
+                                <input type="radio" name="font-size" value={28} />
+                                <p>28</p>
+                            </li>
+                        </ul>
+                        <p>A<span>+</span></p>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
