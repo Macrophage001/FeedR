@@ -6,6 +6,7 @@ import FeedReel from './feedReel';
 import FeedrControls from './feedrControls';
 import InputFormSite from './inputFormSite';
 import InputFormFile from './inputFormFile';
+import FeedROptionsMenu from './feedROptionsMenu';
 
 const punctuationDelaySystem = (() => {
     let publicAPIs = {};
@@ -32,6 +33,14 @@ function FeedR() {
     const baseDelay = 350;
     const baseWordDelay = 35;
 
+    const baseFontFamilies = [
+        `'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`,
+        `'Courier New', Courier, monospace`,
+        `'Times New Roman', Times, serif`,
+        `Cambria, Cochin, Georgia, Times, 'Times New Roman', serif`
+    ];
+
+
     const [novelTextWordArrays, setNovelTextWordArrays] = useState([]);
     const [currentWord, setCurrentWord] = useState('');
     const [pastWords, setPastWords] = useState([]);
@@ -43,10 +52,11 @@ function FeedR() {
     const [areWordsLoaded, setAreWordsLoaded] = useState(false);
     const [url, setUrl] = useState('');
     const [file, setFile] = useState(null);
+    const [isOptionsEnabled, setIsOptionsEnabled] = useState(false);
 
     const root = document.querySelector(':root');
     const pastFeed = document.querySelector('.past-feeds');
-    const currentWordElement = document.querySelector('.current-word');
+    const radioButtons = document.querySelectorAll('.radio-btn');
 
     const startFeed = async (flag) => {
         if (isReset) {
@@ -118,12 +128,37 @@ function FeedR() {
         root.style.setProperty('--feedr-font-size', `${fontSize}px`);
     }
 
+    const updateRadioButtons = (index) => {
+        for (let i = 0; i < radioButtons.length; i++) {
+            let btn = radioButtons[i];
+            if (i === index) {
+                if (!btn.classList.contains('btn-selected'))
+                    btn.classList.add('btn-selected');
+            } else {
+                btn.classList.remove('btn-selected');
+            }
+        }
+    }
+    const setFontFamily = (index) => {
+        root.style.setProperty('--feedr-font-family', baseFontFamilies[index]);
+        updateRadioButtons(index);
+    }
+    const toggleOptionsMenu = () => {
+        setIsOptionsEnabled(!isOptionsEnabled);
+    }
+
     useEffect(() => {
         updateFeedr();
     }, [index, delay, novelTextWordArrays]);
 
     return (
         <div className="FeedR">
+            <div className="hamburger" onClick={ toggleOptionsMenu }>
+                <div className="line"></div>
+                <div className="line"></div>
+                <div className="line"></div>
+            </div>
+
             <InputFormSite url={url} setUrl={setUrl} isFeeding={isFeeding} />
             {/* <InputFormFile setFile={setFile} onFileUploaded={() => startFeed(1)} /> */}
             <FeedReel currentWord={currentWord} pastWords={pastWords} />
@@ -135,52 +170,7 @@ function FeedR() {
                     startFeed();
                 }}
                 isFeeding={isFeeding} />
-            <div className="feedr-options-menu">
-                <div className="feedr-font-size">
-                    <div className="feedr-font-controls" onChange={ (e) => setFontSize(e.target.value) }>
-                        <p>A<span>-</span></p>
-                        <ul>
-                            <li>
-                                <input type="radio" name="font-size" value={14} />
-                                <p>14</p>
-                            </li>
-                            <li>
-                                <input type="radio" name="font-size" value={16} />
-                                <p>16</p>
-                            </li>
-                            <li>
-                                <input type="radio" name="font-size" value={18} />
-                                <p>18</p>
-                            </li>
-                            <li>
-                                <input type="radio" name="font-size" value={20} />
-                                <p>20</p>
-                            </li>
-                            <li>
-                                <input type="radio" name="font-size" value={22} />
-                                <p>20</p>
-                            </li>
-                            <li>
-                                <input type="radio" name="font-size" value={24} />
-                                <p>22</p>
-                            </li>
-                            <li>
-                                <input type="radio" name="font-size" value={26} />
-                                <p>24</p>
-                            </li>
-                            <li>
-                                <input type="radio" name="font-size" value={28} />
-                                <p>26</p>
-                            </li>
-                            <li>
-                                <input type="radio" name="font-size" value={28} />
-                                <p>28</p>
-                            </li>
-                        </ul>
-                        <p>A<span>+</span></p>
-                    </div>
-                </div>
-            </div>
+            <FeedROptionsMenu isOptionsEnabled={ isOptionsEnabled }  setFontFamily={ setFontFamily } setFontSize={ setFontSize } />
         </div>
     );
 }
