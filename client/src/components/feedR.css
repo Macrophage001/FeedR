@@ -177,18 +177,20 @@
 @keyframes smooth-hide {
     0% {
         opacity: 1;
+        height: 1;
     }
     100% {
         opacity: 0;
-        display: none;
+        height: 0;
     }
 }
 @keyframes smooth-visible {
     0% {
         opacity: 0;
-        display: block;
+        height: 0;
     }
     100% {
+        height: 1;
         opacity: 1;
     }
 }

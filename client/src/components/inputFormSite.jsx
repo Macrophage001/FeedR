@@ -4,7 +4,7 @@ function InputFormSite(props) {
     const { isFeeding, url, setUrl } = props;
 
     return (
-        <form className={ `feedr-input ${isFeeding ? 'smooth-hidden' : ''}` }>
+        <form className={ `feedr-input ${isFeeding ? 'smooth-hidden-animation' : ''}` }>
             <input id='url-textbox' type="text" value={url} placeholder='http://...' onChange={(e) => setUrl(e.target.value)} />
         </form>
     )

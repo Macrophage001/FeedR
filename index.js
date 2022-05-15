@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const { default: axios } = require('axios');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.port || 5000
 const fs = require('fs');
@@ -30,9 +31,15 @@ let urlScraperMap = [];
     })
 })();
 
+const formatSimpleText = (text) => text
+    .split(' ')
+    .filter(word => word !== ' ')
 
 const getValidMapping = (url) => urlScraperMap.filter(mapping => url.includes(mapping.url))[0];
 const getValidDecoder = (url) => urlScraperMap.filter(mapping => url.includes(mapping.url))[0].decoder;
+
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 app.get('/retrieve', async (req, resp) => {
     let url = req.query.url;
@@ -47,8 +54,14 @@ app.get('/retrieve', async (req, resp) => {
     resp.send({ wordArr, instructions });
 });
 
-app.post('/retrieveFile', (req, resp) => {
-    console.log(req);
+app.post('/retrieve-file', (req, resp) => {
+    console.log(req.body);
+});
+
+app.post('/retrieve-text', (req, resp) => {
+    // console.log(formatSimpleText(req.body.text));
+    let wordArr = formatSimpleText(req.body.text);
+    resp.send({ wordArr });
 });
 
 

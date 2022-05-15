@@ -7,6 +7,7 @@ import FeedrControls from './feedrControls';
 import InputFormSite from './inputFormSite';
 import InputFormFile from './inputFormFile';
 import FeedROptionsMenu from './feedROptionsMenu';
+import InputFormText from './inputFromText';
 
 const punctuationDelaySystem = (() => {
     let publicAPIs = {};
@@ -53,6 +54,7 @@ function FeedR() {
     const [url, setUrl] = useState('');
     const [file, setFile] = useState(null);
     const [isOptionsEnabled, setIsOptionsEnabled] = useState(false);
+    const [text, setText] = useState('');
 
     const root = document.querySelector(':root');
     const pastFeed = document.querySelector('.past-feeds');
@@ -74,7 +76,10 @@ function FeedR() {
                 response = await axios.get(`/retrieve?url=${url}`);
                 break;
             case 1:
-                response = await axios.post(`/retrieveFile`, { file });
+                response = await axios.post(`/retrieve-file`, { file });
+                break;
+            case 2:
+                response = await axios.post('/retrieve-text', { text });
                 break;
             default:
                 console.error('Invalid request!');
@@ -89,11 +94,6 @@ function FeedR() {
     const pauseFeed = () => {
         if (areWordsLoaded) {
             setIsFeeding(false);
-        }
-    }
-    const resumeFeed = () => {
-        if (areWordsLoaded) {
-            setIsFeeding(true);
         }
     }
 
@@ -159,11 +159,12 @@ function FeedR() {
                 <div className="line"></div>
             </div>
 
-            <InputFormSite url={url} setUrl={setUrl} isFeeding={isFeeding} />
+            {/* <InputFormSite url={url} setUrl={setUrl} isFeeding={isFeeding} /> */}
             {/* <InputFormFile setFile={setFile} onFileUploaded={() => startFeed(1)} /> */}
+            <InputFormText text={ text } setText={ setText } isFeeding={ isFeeding } />
             <FeedReel currentWord={currentWord} pastWords={pastWords} />
             <FeedrControls
-                startFeed={() => startFeed(0)}
+                startFeed={() => startFeed(2)}
                 pauseFeed={pauseFeed}
                 resetFeed={() => {
                     setIsReset(true);
