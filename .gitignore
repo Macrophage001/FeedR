@@ -5,6 +5,10 @@ node_modules/
 client/node_modules/
 /.pnp
 .pnp.js
+.vscode/
+
+package.json
+package-lock.json
 
 # testing
 /coverage
