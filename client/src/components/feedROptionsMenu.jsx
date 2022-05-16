@@ -1,22 +1,22 @@
 import React from 'react'
 
 const OptionFontFamily = (props) => {
-    const { setFontFamily } = props;
+    const { setFontFamily, radioButtonsRef } = props;
 
     return (
         <div className="feedr-font-family">
             <ul>
                 <li>
-                    <button className='radio-btn' onClick={(e) => setFontFamily(0)} >Segoe</button>
+                    <button ref={element => radioButtonsRef.current[0] = element} className='radio-btn' onClick={(e) => setFontFamily(0)} >Segoe</button>
                 </li>
                 <li>
-                    <button className='radio-btn' onClick={(e) => setFontFamily(1)} >Courier</button>
+                    <button ref={element => radioButtonsRef.current[1] = element} className='radio-btn' onClick={(e) => setFontFamily(1)} >Courier</button>
                 </li>
                 <li>
-                    <button className='radio-btn' onClick={(e) => setFontFamily(2)} >Times</button>
+                    <button ref={element => radioButtonsRef.current[2] = element} className='radio-btn' onClick={(e) => setFontFamily(2)} >Times</button>
                 </li>
                 <li>
-                    <button className='radio-btn' onClick={(e) => setFontFamily(3)} >Cambria</button>
+                    <button ref={element => radioButtonsRef.current[3] = element} className='radio-btn' onClick={(e) => setFontFamily(3)} >Cambria</button>
                 </li>
             </ul>
         </div>
@@ -74,12 +74,12 @@ const OptionFontSize = (props) => {
 }
 
 function FeedROptionsMenu(props) {
-    const { setFontFamily, setFontSize, isOptionsEnabled } = props;
+    const { setFontFamily, setFontSize, isOptionsEnabled, radioButtonsRef } = props;
 
     return (
-        <div className={ `feedr-options-menu ${isOptionsEnabled ? 'show-options-menu-animation' : 'hide-options-menu-animation'}` }>
-            <OptionFontFamily setFontFamily={setFontFamily} />
-            <OptionFontSize setFontSize={ setFontSize } />
+        <div className={`feedr-options-menu ${isOptionsEnabled ? 'show-options-menu-animation' : 'hide-options-menu-animation'}`}>
+            <OptionFontFamily setFontFamily={setFontFamily} radioButtonsRef={radioButtonsRef} />
+            <OptionFontSize setFontSize={setFontSize} />
         </div>
     )
 }

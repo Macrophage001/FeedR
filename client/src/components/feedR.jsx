@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useReducer } from 'react';
 import axios from 'axios';
 import './feedR.css';
 
 import FeedReel from './feedReel';
 import FeedrControls from './feedrControls';
-import InputFormSite from './inputFormSite';
-import InputFormFile from './inputFormFile';
 import FeedROptionsMenu from './feedROptionsMenu';
-import InputFormText from './inputFromText';
+import { Inputs, InputTypeSelection } from './inputs';
 
 const punctuationDelaySystem = (() => {
     let publicAPIs = {};
@@ -41,13 +39,14 @@ function FeedR() {
         `Cambria, Cochin, Georgia, Times, 'Times New Roman', serif`
     ];
 
-
     const [novelTextWordArrays, setNovelTextWordArrays] = useState([]);
     const [currentWord, setCurrentWord] = useState('');
     const [pastWords, setPastWords] = useState([]);
     const [index, setIndex] = useState(0);
+
     const [delay, setDelay] = useState(baseDelay);
     const [feedrTimeout, setFeedrTimeout] = useState(null);
+    
     const [isFeeding, setIsFeeding] = useState(false);
     const [isReset, setIsReset] = useState(false);
     const [areWordsLoaded, setAreWordsLoaded] = useState(false);
@@ -56,9 +55,13 @@ function FeedR() {
     const [isOptionsEnabled, setIsOptionsEnabled] = useState(false);
     const [text, setText] = useState('');
 
+    // TODO: Finish implementing toggling of past-feed reel.
+    const [isFeedReelEnabled, setIsFeedReelEnabled] = useState(false);
+    const [inputType, setInputType] = useState(0);
+
     const root = document.querySelector(':root');
-    const pastFeed = document.querySelector('.past-feeds');
-    const radioButtons = document.querySelectorAll('.radio-btn');
+    const pastFeed = useRef(null);
+    const radioButtons = useRef([]);
 
     const startFeed = async (flag) => {
         if (isReset) {
@@ -69,14 +72,17 @@ function FeedR() {
             setAreWordsLoaded(false);
         }
         // const backupUrl = 'https://lightnovelreader.org/historys-strongest-senior-brother/chapter-1';
-
         let response = null;
         switch (flag) {
             case 0:
                 response = await axios.get(`/retrieve?url=${url}`);
                 break;
             case 1:
-                response = await axios.post(`/retrieve-file`, { file });
+                const data = new FormData();
+                data.append('file', file);
+                console.warn(file);
+
+                response = await axios.post(`/retrieve-file`, data);
                 break;
             case 2:
                 response = await axios.post('/retrieve-text', { text });
@@ -96,11 +102,16 @@ function FeedR() {
             setIsFeeding(false);
         }
     }
+    const resumeFeed = () => {
+        if (areWordsLoaded) {
+            setIsFeeding(true);
+        }
+    }
 
-    const updateFeedr = () => {
+    const updateFeedr = useCallback(() => {
         if (isFeeding) {
-            pastFeed
-                && pastFeed.scrollBy({
+            pastFeed.current
+                && pastFeed.current.scrollBy({
                     top: 1000,
                     left: 0,
                     behavior: 'smooth'
@@ -115,22 +126,20 @@ function FeedR() {
                 let word = novelTextWordArrays[index];
 
                 setCurrentWord(word);
-
                 setIndex(index + 1);
+
                 setDelay(baseDelay + punctuationDelaySystem.addPunctuationDelay(word) + punctuationDelaySystem.addWordLengthDelay(baseWordDelay, word));
             }, delay));
-        } else {
-            clearTimeout(feedrTimeout);
         }
-    }
+    }, [isFeeding, currentWord]);
 
-    const setFontSize = (fontSize) => {
-        root.style.setProperty('--feedr-font-size', `${fontSize}px`);
-    }
+    useEffect(() => {
+        updateFeedr();
+    }, [updateFeedr]);
 
     const updateRadioButtons = (index) => {
-        for (let i = 0; i < radioButtons.length; i++) {
-            let btn = radioButtons[i];
+        for (let i = 0; i < radioButtons.current.length; i++) {
+            let btn = radioButtons.current[i];
             if (i === index) {
                 if (!btn.classList.contains('btn-selected'))
                     btn.classList.add('btn-selected');
@@ -139,39 +148,54 @@ function FeedR() {
             }
         }
     }
+
+    const setFontSize = (fontSize) => root.style.setProperty('--feedr-font-size', `${fontSize}px`);
+
     const setFontFamily = (index) => {
         root.style.setProperty('--feedr-font-family', baseFontFamilies[index]);
         updateRadioButtons(index);
     }
-    const toggleOptionsMenu = () => {
-        setIsOptionsEnabled(!isOptionsEnabled);
-    }
 
-    useEffect(() => {
-        updateFeedr();
-    }, [index, delay, novelTextWordArrays]);
+    const toggleOptionsMenu = () => setIsOptionsEnabled(!isOptionsEnabled);
 
     return (
         <div className="FeedR">
-            <div className="hamburger" onClick={ toggleOptionsMenu }>
+            <div className="hamburger" onClick={toggleOptionsMenu}>
                 <div className="line"></div>
                 <div className="line"></div>
                 <div className="line"></div>
             </div>
 
-            {/* <InputFormSite url={url} setUrl={setUrl} isFeeding={isFeeding} /> */}
-            {/* <InputFormFile setFile={setFile} onFileUploaded={() => startFeed(1)} /> */}
-            <InputFormText text={ text } setText={ setText } isFeeding={ isFeeding } />
-            <FeedReel currentWord={currentWord} pastWords={pastWords} />
+            <Inputs 
+                index={inputType} 
+                url={url} 
+                setUrl={setUrl} 
+                isFeeding={isFeeding} 
+                setFile={setFile} 
+                text={text} 
+                setText={setText} 
+                startFeed={startFeed} />
+            
+            <InputTypeSelection setInputType={setInputType} isFeeding={isFeeding} />
+            
+            <FeedReel isEnabled={isFeedReelEnabled} currentWord={currentWord} pastWords={pastWords} pastFeedRef={pastFeed} />
+            
             <FeedrControls
                 startFeed={() => startFeed(2)}
                 pauseFeed={pauseFeed}
+                resumeFeed={resumeFeed}
                 resetFeed={() => {
                     setIsReset(true);
                     startFeed();
                 }}
-                isFeeding={isFeeding} />
-            <FeedROptionsMenu isOptionsEnabled={ isOptionsEnabled }  setFontFamily={ setFontFamily } setFontSize={ setFontSize } />
+                isFeeding={isFeeding}
+                areWordsLoaded={areWordsLoaded} />
+            
+            <FeedROptionsMenu 
+                isOptionsEnabled={isOptionsEnabled} 
+                setFontFamily={setFontFamily} 
+                setFontSize={setFontSize} 
+                radioButtonsRef={radioButtons} />
         </div>
     );
 }

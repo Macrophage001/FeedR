@@ -6,11 +6,20 @@ const mapping = {
         const $ = cheerio.load(res.data);
         let wordArr = [];
         $('#chapterText p').get().forEach(element => {
-            $(element)
+            // $(element)
+            //     .text()
+            //     .split(' ')
+            //     .filter(word => word !== ' ')
+            //     .forEach(word => wordArr.push(word));
+            wordArr = $(element)
                 .text()
+                .replaceAll('Sponsored Content', '')
+                .replaceAll('\r', ' ')
+                .replaceAll('\n', ' ')
+                .replaceAll('\t', ' ')
+                .replaceAll('\b', ' ')
                 .split(' ')
-                .filter(word => word !== ' ')
-                .forEach(word => wordArr.push(word));
+                .filter(word => word !== '')
         });
         return wordArr;
     },
