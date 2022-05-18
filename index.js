@@ -4,9 +4,9 @@ const axios = require('axios');
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
-const app = express();
 const fs = require('fs');
 const path = require('path');
+const app = express();
 
 const port = process.env.port || 5000
 
@@ -46,8 +46,8 @@ const formatSimpleText = (text) =>
 const getValidMapping = (url) => urlScraperMap.filter(mapping => url.includes(mapping.url))[0];
 
 app.use(fileUpload({ createParentPath: true }))
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+app.use(express.urlencoded({extended: false}));
+app.use(express.json());
 
 app.get('/retrieve', async (req, resp) => {
     let url = req.query.url;
