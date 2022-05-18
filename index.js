@@ -21,11 +21,9 @@ let urlScraperMap = [];
     fs.readdir(process.env.MAPPING_MODULE_DIRECTORY, (err, files) => {
         if (err) console.error(err);
         files.forEach(file => {
-            // let mapping = require(path.join(__dirname, process.env.MAPPING_MODULE_DIRECTORY, file));
             const { getModules } = require(path.join(__dirname, process.env.MAPPING_MODULE_DIRECTORY, file));
             getModules().forEach(mapping => {
                 if (mapping !== undefined && mappingValidityCheck(mapping.url, mapping.decoder)) {
-                    // console.log('Mapping Found!: ', mapping);
                     urlScraperMap.push( mapping );
                 }
                 else {
@@ -56,15 +54,9 @@ app.get('/retrieve', async (req, resp) => {
     console.log('RETRIEVE SITE REQUEST RECEIVED');
 
     let url = req.query.url;
-    // console.log('URL: ', url);
-
     let response = await axios.get(url);
-
     let mapping = getValidMapping(url);
-    // console.log('Mapping: ', mapping);
-
     let wordArr = mapping.decoder(response);
-    // console.log('Word Array: ', wordArr);
 
     let instructions = mapping.instructions;
 
