@@ -21,25 +21,28 @@ let urlScraperMap = [];
     fs.readdir(process.env.MAPPING_MODULE_DIRECTORY, (err, files) => {
         if (err) console.error(err);
         files.forEach(file => {
-            let mapping = require(path.join(__dirname, process.env.MAPPING_MODULE_DIRECTORY, file));
-            if (mapping !== undefined && mappingValidityCheck(mapping.url, mapping.decoder)) {
-                // console.log('Mapping Found!: ', mapping);
-                urlScraperMap.push( mapping );
-            }
-            else {
-                console.error('Invalid Mapping: Must include valid URL: string and decoder: [Function (string) => string[]]', mapping);
-            }
+            // let mapping = require(path.join(__dirname, process.env.MAPPING_MODULE_DIRECTORY, file));
+            const { getModules } = require(path.join(__dirname, process.env.MAPPING_MODULE_DIRECTORY, file));
+            getModules().forEach(mapping => {
+                if (mapping !== undefined && mappingValidityCheck(mapping.url, mapping.decoder)) {
+                    // console.log('Mapping Found!: ', mapping);
+                    urlScraperMap.push( mapping );
+                }
+                else {
+                    console.error('Invalid Mapping: Must include valid URL: string and decoder: [Function (string) => string[]]', mapping);
+                }
+            })
         })
     })
 })();
 
 const formatSimpleText = (text) => 
     text
-        .replaceAll('Sponsored Content', '')
-        .replaceAll('\r', ' ')
-        .replaceAll('\n', ' ')
-        .replaceAll('\t', ' ')
-        .replaceAll('\b', ' ')
+        .replace('Sponsored Content', '')
+        .replace('\r', ' ')
+        .replace('\n', ' ')
+        .replace('\t', ' ')
+        .replace('\b', ' ')
         .split(' ')
         .filter(word => word !== '');
 
@@ -50,11 +53,19 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
 app.get('/retrieve', async (req, resp) => {
+    console.log('RETRIEVE SITE REQUEST RECEIVED');
+
     let url = req.query.url;
+    // console.log('URL: ', url);
+
     let response = await axios.get(url);
+
     let mapping = getValidMapping(url);
+    // console.log('Mapping: ', mapping);
 
     let wordArr = mapping.decoder(response);
+    // console.log('Word Array: ', wordArr);
+
     let instructions = mapping.instructions;
 
     resp
@@ -63,6 +74,7 @@ app.get('/retrieve', async (req, resp) => {
 });
 
 app.post('/retrieve-file', async (req, resp) => {
+    console.log('RETRIEVE FILE REQUEST RECEIVED');
     if (!req.files) {
         resp.status(404).send('No file uploaded');
     } else {
@@ -72,6 +84,9 @@ app.post('/retrieve-file', async (req, resp) => {
 });
 
 app.post('/retrieve-text', (req, resp) => {
+    console.log('RETRIEVE TEXT REQUEST RECEIVED');
+    console.log('WORD ARRAY: ', req.body.text);
+
     let wordArr = formatSimpleText(req.body.text);
     resp.status(200).send({ wordArr });
 });

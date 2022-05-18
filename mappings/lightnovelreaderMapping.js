@@ -1,25 +1,16 @@
 const cheerio = require('cheerio');
 
-const mapping = {
+const lightNovelReaderMapping = {
     url: 'https://lightnovelreader.org/',
     decoder: (res) => {
         const $ = cheerio.load(res.data);
         let wordArr = [];
         $('#chapterText p').get().forEach(element => {
-            // $(element)
-            //     .text()
-            //     .split(' ')
-            //     .filter(word => word !== ' ')
-            //     .forEach(word => wordArr.push(word));
-            wordArr = $(element)
+            $(element)
                 .text()
-                .replaceAll('Sponsored Content', '')
-                .replaceAll('\r', ' ')
-                .replaceAll('\n', ' ')
-                .replaceAll('\t', ' ')
-                .replaceAll('\b', ' ')
                 .split(' ')
-                .filter(word => word !== '')
+                .filter(word => word !== ' ')
+                .forEach(word => wordArr.push(word));
         });
         return wordArr;
     },
@@ -33,4 +24,7 @@ const mapping = {
     ]
 }
 
-module.exports = mapping;
+const getModules = () => [lightNovelReaderMapping];
+
+// module.exports = mapping;
+module.exports = { getModules }

@@ -7,7 +7,7 @@ function FeedReel(props) {
     const { pastWords, currentWord, pastFeedRef, isPastFeedEnabled } = props;
     const [isMouseOver, setIsMouseOver] = useState(false);
 
-    console.log(isPastFeedEnabled);
+    // console.log(isPastFeedEnabled);
 
     return (
         <div className="feed-reel">

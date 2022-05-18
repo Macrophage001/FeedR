@@ -55,7 +55,6 @@ function FeedR() {
     const [isOptionsEnabled, setIsOptionsEnabled] = useState(false);
     const [text, setText] = useState('');
 
-    // TODO: Finish implementing toggling of past-feed reel.
     const [isPastFeedEnabled, setIsPastFeedEnabled] = useState(true)
     const [inputType, setInputType] = useState(0);
 
@@ -63,7 +62,10 @@ function FeedR() {
     const pastFeed = useRef(null);
     const radioButtons = useRef([]);
 
-    const startFeed = async (flag) => {
+    const startFeed = async (inputType) => {
+        inputType = Math.floor(inputType);
+
+        console.log('Input Type: ', inputType, typeof inputType);
         if (isReset) {
             setIndex(0);
             setPastWords([]);
@@ -72,12 +74,15 @@ function FeedR() {
             setAreWordsLoaded(false);
         }
         // const backupUrl = 'https://lightnovelreader.org/historys-strongest-senior-brother/chapter-1';
-        let response = null;
-        switch (flag) {
+        let response;
+        switch (inputType) {
             case 0:
+                console.log('POSTING RETRIEVE SITE REQUEST!');
                 response = await axios.get(`/retrieve?url=${url}`);
                 break;
             case 1:
+                console.log('POSTING RETRIEVE FILE REQUEST!');
+
                 const data = new FormData();
                 data.append('file', file);
                 console.warn(file);
@@ -85,6 +90,9 @@ function FeedR() {
                 response = await axios.post(`/retrieve-file`, data);
                 break;
             case 2:
+                console.log('POSTING RETRIEVE TEXT REQUEST!');
+                console.log('TEXT: ', text);
+
                 response = await axios.post('/retrieve-text', { text });
                 break;
             default:
@@ -92,6 +100,7 @@ function FeedR() {
                 break;
         }
 
+        console.log(response.data.wordArr);
         setNovelTextWordArrays(response.data.wordArr);
 
         setIsFeeding(true);
@@ -180,7 +189,8 @@ function FeedR() {
             <FeedReel isPastFeedEnabled={isPastFeedEnabled} currentWord={currentWord} pastWords={pastWords} pastFeedRef={pastFeed} />
             
             <FeedrControls
-                startFeed={() => startFeed(2)}
+                inputType={inputType}
+                startFeed={startFeed}
                 pauseFeed={pauseFeed}
                 resumeFeed={resumeFeed}
                 resetFeed={() => {
