@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback, useReducer } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
 import './feedR.css';
 
@@ -56,7 +56,7 @@ function FeedR() {
     const [text, setText] = useState('');
 
     // TODO: Finish implementing toggling of past-feed reel.
-    const [isFeedReelEnabled, setIsFeedReelEnabled] = useState(false);
+    const [isPastFeedEnabled, setIsPastFeedEnabled] = useState(true)
     const [inputType, setInputType] = useState(0);
 
     const root = document.querySelector(':root');
@@ -110,8 +110,7 @@ function FeedR() {
 
     const updateFeedr = useCallback(() => {
         if (isFeeding) {
-            pastFeed.current
-                && pastFeed.current.scrollBy({
+            pastFeed.current?.scrollBy({
                     top: 1000,
                     left: 0,
                     behavior: 'smooth'
@@ -178,7 +177,7 @@ function FeedR() {
             
             <InputTypeSelection setInputType={setInputType} isFeeding={isFeeding} />
             
-            <FeedReel isEnabled={isFeedReelEnabled} currentWord={currentWord} pastWords={pastWords} pastFeedRef={pastFeed} />
+            <FeedReel isPastFeedEnabled={isPastFeedEnabled} currentWord={currentWord} pastWords={pastWords} pastFeedRef={pastFeed} />
             
             <FeedrControls
                 startFeed={() => startFeed(2)}
@@ -192,7 +191,10 @@ function FeedR() {
                 areWordsLoaded={areWordsLoaded} />
             
             <FeedROptionsMenu 
-                isOptionsEnabled={isOptionsEnabled} 
+                isOptionsEnabled={isOptionsEnabled}
+                isPastFeedEnabled={isPastFeedEnabled}
+
+                setIsPastFeedEnabled={setIsPastFeedEnabled}
                 setFontFamily={setFontFamily} 
                 setFontSize={setFontSize} 
                 radioButtonsRef={radioButtons} />

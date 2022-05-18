@@ -1,5 +1,13 @@
 import React from 'react'
 
+const CheckBox = ({ className, checked, imgs, onChange }) => (
+    <img
+            className={className}
+            src={checked ? imgs.checkedImg : imgs.uncheckedImg}
+            alt={checked ? 'Checked' : 'Unchecked'}
+            onClick={onChange} />
+)
+
 const OptionFontFamily = (props) => {
     const { setFontFamily, radioButtonsRef } = props;
 
@@ -72,14 +80,45 @@ const OptionFontSize = (props) => {
         </div>
     )
 }
+const ToggleOptions = ({ isPastFeedEnabled, handleToggleOption_isPastFeedEnabled }) => (
+    <div className="feedr-toggle-options">
+        <ul>
+            <li>
+                <CheckBox
+                    className='feedr-toggle-option'
+                    checked={isPastFeedEnabled}
+                    onChange={handleToggleOption_isPastFeedEnabled}
+                    imgs={{ checkedImg: './assets/options/historyEnabled.png', uncheckedImg: './assets/options/historyDisabled.png' }} />
+            </li>
+        </ul>
+    </div>
+)
 
 function FeedROptionsMenu(props) {
-    const { setFontFamily, setFontSize, isOptionsEnabled, radioButtonsRef } = props;
+    const { setFontFamily, setFontSize, isOptionsEnabled, isPastFeedEnabled, setIsPastFeedEnabled, radioButtonsRef } = props;
+
+    const handleToggleOption_isPastFeedEnabled = () => {
+        setIsPastFeedEnabled(!isPastFeedEnabled);
+    }
 
     return (
         <div className={`feedr-options-menu ${isOptionsEnabled ? 'show-options-menu-animation' : 'hide-options-menu-animation'}`}>
             <OptionFontFamily setFontFamily={setFontFamily} radioButtonsRef={radioButtonsRef} />
             <OptionFontSize setFontSize={setFontSize} />
+            <ToggleOptions 
+                isPastFeedEnabled={isPastFeedEnabled}
+                handleToggleOption_isPastFeedEnabled={handleToggleOption_isPastFeedEnabled}/>
+            {/* <div className="feedr-toggle-options">
+                <ul>
+                    <li>
+                        <CheckBox
+                            className='feedr-toggle-option'
+                            checked={isPastFeedEnabled}
+                            onChange={handleToggleOption_isPastFeedEnabled}
+                            imgs={{ checkedImg: './assets/options/historyEnabled.png', uncheckedImg: './assets/options/historyDisabled.png' }} />
+                    </li>
+                </ul>
+            </div> */}
         </div>
     )
 }

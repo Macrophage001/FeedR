@@ -1,24 +1,27 @@
 import React, { useState } from 'react'
+import { generateUUID } from '../utils/uuidGenerator';
 
-const CurrentWord = (props) => <h2 className='current-word'>{ props.word }</h2>
+const CurrentWord = (props) => <h2 className='current-word'>{props.word}</h2>
 
 function FeedReel(props) {
-    const { pastWords, currentWord, pastFeedRef } = props;
-    const [ isMouseOver, setIsMouseOver ] = useState(false);
+    const { pastWords, currentWord, pastFeedRef, isPastFeedEnabled } = props;
+    const [isMouseOver, setIsMouseOver] = useState(false);
+
+    console.log(isPastFeedEnabled);
 
     return (
         <div className="feed-reel">
-            <div 
+            <div
                 ref={pastFeedRef}
-                onMouseOver={ (e) => setIsMouseOver(true) }
-                onMouseLeave={ (e) => setIsMouseOver(false) }
-                className="past-feeds" 
-                style={ isMouseOver ? { overflowX: 'hidden', overflowY: 'scroll' } : { overflow: 'hidden' } }>
+                onMouseOver={(e) => setIsMouseOver(true)}
+                onMouseLeave={(e) => setIsMouseOver(false)}
+                className={ `past-feeds ${isPastFeedEnabled ? 'smooth-visible-animation' : 'smooth-hidden-animation'}` }
+                style={isMouseOver ? { overflowX: 'hidden', overflowY: 'scroll' } : { overflow: 'hidden' }}>
                 <ul>
-                    {pastWords && pastWords.map(word => <li>{word}</li>)}
+                    {pastWords?.map((word, i) => <li key={ generateUUID(`${i}:${word}`) } >{word}</li>)}
                 </ul>
             </div>
-            <CurrentWord word={ currentWord }/>
+            <CurrentWord word={currentWord} />
         </div>
     )
 }
