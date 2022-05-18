@@ -7,7 +7,7 @@ export const Inputs = (props) => {
     const { index, url, setUrl, isFeeding, setFile, text, setText, startFeed } = props;
 
     return (
-        <>
+        <div className={`${isFeeding ? 'smooth-hidden-animation' : 'smooth-visible-animation'}`}>
         {
             {
                 0: <InputFormSite url={url} setUrl={setUrl} isFeeding={isFeeding} />,
@@ -15,7 +15,7 @@ export const Inputs = (props) => {
                 2: <InputFormText text={text} setText={setText} isFeeding={isFeeding} />
             }[index]
         }
-        </>
+        </div>
     )
 }
 
