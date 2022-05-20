@@ -46,7 +46,7 @@ function FeedR() {
 
     const [delay, setDelay] = useState(baseDelay);
     const [feedrTimeout, setFeedrTimeout] = useState(null);
-    
+
     const [isFeeding, setIsFeeding] = useState(false);
     const [isReset, setIsReset] = useState(false);
     const [areWordsLoaded, setAreWordsLoaded] = useState(false);
@@ -120,10 +120,10 @@ function FeedR() {
     const updateFeedr = useCallback(() => {
         if (isFeeding) {
             pastFeed.current?.scrollBy({
-                    top: 1000,
-                    left: 0,
-                    behavior: 'smooth'
-                });
+                top: 1000,
+                left: 0,
+                behavior: 'smooth'
+            });
 
             clearTimeout(feedrTimeout);
             setFeedrTimeout(setTimeout(() => {
@@ -167,48 +167,49 @@ function FeedR() {
     const toggleOptionsMenu = () => setIsOptionsEnabled(!isOptionsEnabled);
 
     return (
-        <div className="FeedR">
-            <div className="hamburger" onClick={toggleOptionsMenu}>
-                <div className="line"></div>
-                <div className="line"></div>
-                <div className="line"></div>
+        <>
+            <div className="FeedR">
+                <div className="hamburger" onClick={toggleOptionsMenu}>
+                    <div className="line"></div>
+                    <div className="line"></div>
+                    <div className="line"></div>
+                </div>
+
+                <Inputs
+                    index={inputType}
+                    url={url}
+                    setUrl={setUrl}
+                    isFeeding={isFeeding}
+                    setFile={setFile}
+                    text={text}
+                    setText={setText}
+                    startFeed={startFeed} />
+
+                <InputTypeSelection setInputType={setInputType} isFeeding={isFeeding} />
+
+                <FeedReel isPastFeedEnabled={isPastFeedEnabled} currentWord={currentWord} pastWords={pastWords} pastFeedRef={pastFeed} />
+
+                <FeedrControls
+                    inputType={inputType}
+                    startFeed={startFeed}
+                    pauseFeed={pauseFeed}
+                    resumeFeed={resumeFeed}
+                    resetFeed={() => {
+                        setIsReset(true);
+                        startFeed();
+                    }}
+                    isFeeding={isFeeding}
+                    areWordsLoaded={areWordsLoaded} />
             </div>
+            <FeedROptionsMenu
+                    isOptionsEnabled={isOptionsEnabled}
+                    isPastFeedEnabled={isPastFeedEnabled}
 
-            <Inputs 
-                index={inputType} 
-                url={url} 
-                setUrl={setUrl} 
-                isFeeding={isFeeding} 
-                setFile={setFile} 
-                text={text} 
-                setText={setText} 
-                startFeed={startFeed} />
-            
-            <InputTypeSelection setInputType={setInputType} isFeeding={isFeeding} />
-            
-            <FeedReel isPastFeedEnabled={isPastFeedEnabled} currentWord={currentWord} pastWords={pastWords} pastFeedRef={pastFeed} />
-            
-            <FeedrControls
-                inputType={inputType}
-                startFeed={startFeed}
-                pauseFeed={pauseFeed}
-                resumeFeed={resumeFeed}
-                resetFeed={() => {
-                    setIsReset(true);
-                    startFeed();
-                }}
-                isFeeding={isFeeding}
-                areWordsLoaded={areWordsLoaded} />
-            
-            <FeedROptionsMenu 
-                isOptionsEnabled={isOptionsEnabled}
-                isPastFeedEnabled={isPastFeedEnabled}
-
-                setIsPastFeedEnabled={setIsPastFeedEnabled}
-                setFontFamily={setFontFamily} 
-                setFontSize={setFontSize} 
-                radioButtonsRef={radioButtons} />
-        </div>
+                    setIsPastFeedEnabled={setIsPastFeedEnabled}
+                    setFontFamily={setFontFamily}
+                    setFontSize={setFontSize}
+                    radioButtonsRef={radioButtons} />
+        </>
     );
 }
 

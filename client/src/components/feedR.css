@@ -1,21 +1,28 @@
 :root {
     --feedr-window-color: #313131;
-    --feedr-options-window-color: #1f1f1f;
-    --feedr-option-enabled-color: #a728f1;
     --feedr-text-color: #ffebcd;
+    
+    --feedr-option-window-color: #1f1f1f;
+    --feedr-option-enabled-color: #a728f1;
     --feedr-option-text-color: #fff;
 
     --feedr-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --feedr-font-family-btn-color: none;
     --feedr-font-size: 16px;
+
+    --feedr-top-position: 35%;
+    --feedr-left-position: 50%;
 }
 
 .FeedR {
     position: absolute;
-    top: 35%;
-    left: 50%;
+    top: var(--feedr-top-position);
+    left: var(--feedr-left-position);
 
-    transform: translate(-50%, -35%);
+    transform: translate(
+        calc(var(--feedr-left-position) * -1), calc(var(--feedr-top-position) * -1)
+    );
+
     display: grid;
     grid-template-rows: repeat(2, auto);
     place-items: center;
@@ -25,8 +32,6 @@
 
     padding: 2.5rem;
     width: 30rem;
-
-    overflow: hidden;
 }
 .hamburger {
     cursor: pointer;
@@ -82,6 +87,19 @@
 .feedr-input {
     min-width: 90%;
 }
+.feedr-input-selection ul {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.feedr-input-selection ul li {
+    list-style: none;
+
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem;
+}
 
 .feedr-file {
     display: flex;
@@ -130,12 +148,10 @@
 }
 #feedr-btn:hover {
     transition: 250ms ease;
-    text-shadow: 0 0 4px var(--feedr-option-text-color);
-    transform: scale(104%);
+    transform: scale(110%);
 }
 #feedr-btn:active {
     transition: 250ms ease;
-    text-shadow: none;
     transform: scale(96%);
 }
 
@@ -194,153 +210,4 @@
         height: 1;
         opacity: 1;
     }
-}
-
-.feedr-options-menu {
-    position: absolute;
-    padding: 1rem;
-    background-color: var(--feedr-options-window-color);
-    border-radius: 10px;
-
-    bottom: -12rem;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.hide-options-menu-animation {
-    animation: hide-options-menu 300ms ease-in-out forwards;
-}
-.show-options-menu-animation {
-    animation: show-options-menu 300ms ease-in-out forwards;
-}
-
-@keyframes hide-options-menu {
-    0% {
-        bottom: 0;
-    }
-    10% {
-        bottom: 2rem;
-    }
-    100% {
-        bottom: -12rem;
-    }
-}
-@keyframes show-options-menu {
-    0% {
-        bottom: -12rem;
-    }
-    80% {
-        bottom: 2rem;
-    }
-    100% {
-        bottom: 0;
-    }
-}
-
-.feedr-font-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-}
-.feedr-font-controls > p {
-    margin: 0.5rem;
-    color: var(--feedr-option-text-color);
-    text-align: center;
-    font-size: 1.2rem;
-}
-.feedr-font-controls > p span {
-    position: relative;
-    top: -35%;
-}
-
-.feedr-input-selection ul {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-}
-.feedr-input-selection ul li {
-    list-style: none;
-
-    display: flex;
-    flex-direction: column;
-    margin: 0.5rem;
-}
-.feedr-input-selection ul li p {
-    color: var(--feedr-option-text-color);
-    font-weight: bold;
-}
-
-.feedr-font-size ul {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-}
-.feedr-font-size ul li {
-    display: flex;
-    flex-direction: column;
-
-    list-style: none;
-    color: var(--feedr-option-text-color);
-    margin: 0.4rem;
-}
-.feedr-font-size ul li input[type=radio] {
-    cursor: pointer;
-    background: none;
-    border: none;
-}
-.feedr-font-family ul {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-
-    width: 100%;
-}
-.feedr-font-family ul li {
-    display: flex;
-    flex-direction: column;
-
-    margin: 0 0.5rem;
-
-    list-style: none;
-    color: var(--feedr-option-text-color);
-}
-.feedr-toggle-option {
-    display: flex;
-}
-.feedr-toggle-option > * {
-    margin: 0.25rem;
-}
-.radio-btn {
-    cursor: pointer;
-    background: #44365f;
-    border: none;
-    border-radius: 5px;
-    padding: 0.35rem 0.75rem;
-
-    font-size: 1em;
-    color: var(--feedr-option-text-color);
-}
-.btn-selected {
-    background: #7b61aa
-}
-.feedr-toggle-options ul {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.feedr-toggle-options ul li {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    font-weight: bold;
-
-    width: 1.25rem;
-    height: 1.25rem;
-}
-.feedr-toggle-options ul li:hover img {
-    transition: 300ms ease forwards;
-    transform: scale(110%);
 }

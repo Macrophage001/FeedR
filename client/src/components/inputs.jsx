@@ -3,7 +3,7 @@ import InputFormSite from './inputFormSite';
 import InputFormFile from './inputFormFile';
 import InputFormText from './inputFromText';
 
-export const Inputs = (props) => {
+const Inputs = (props) => {
     const { index, url, setUrl, isFeeding, setFile, text, setText, startFeed } = props;
 
     return (
@@ -19,7 +19,7 @@ export const Inputs = (props) => {
     )
 }
 
-export const InputTypeSelection = (props) => {
+const InputTypeSelection = (props) => {
     const { setInputType, isFeeding } = props;
 
     return (
@@ -43,3 +43,5 @@ export const InputTypeSelection = (props) => {
         </div>
     )
 }
+
+export { Inputs, InputTypeSelection };

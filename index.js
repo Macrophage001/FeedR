@@ -3,7 +3,6 @@ require('dotenv').config();
 const axios = require('axios');
 const express = require('express');
 const fileUpload = require('express-fileupload');
-const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const app = express();
@@ -36,11 +35,11 @@ let urlScraperMap = [];
 
 const formatSimpleText = (text) => 
     text
-        .replace('Sponsored Content', '')
-        .replace('\r', ' ')
-        .replace('\n', ' ')
-        .replace('\t', ' ')
-        .replace('\b', ' ')
+        .replaceAll('Sponsored Content', '')
+        .replaceAll('\r', ' ')
+        .replaceAll('\n', ' ')
+        .replaceAll('\t', ' ')
+        .replaceAll('\b', ' ')
         .split(' ')
         .filter(word => word !== '');
 

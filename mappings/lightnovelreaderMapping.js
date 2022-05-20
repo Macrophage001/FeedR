@@ -8,8 +8,9 @@ const lightNovelReaderMapping = {
         $('#chapterText p').get().forEach(element => {
             $(element)
                 .text()
+                .replace('Sponsored Content', '')
                 .split(' ')
-                .filter(word => word !== ' ')
+                .filter(word => word !== '')
                 .forEach(word => wordArr.push(word));
         });
         return wordArr;
@@ -26,5 +27,4 @@ const lightNovelReaderMapping = {
 
 const getModules = () => [lightNovelReaderMapping];
 
-// module.exports = mapping;
 module.exports = { getModules }

@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useRef } from 'react'
+
+import './feedROptions.css'
 
 const CheckBox = ({ className, checked, imgs, onChange }) => (
     <img
-            className={className}
-            src={checked ? imgs.checkedImg : imgs.uncheckedImg}
-            alt={checked ? 'Checked' : 'Unchecked'}
-            onClick={onChange} />
+        className={className}
+        src={checked ? imgs.checkedImg : imgs.uncheckedImg}
+        alt={checked ? 'Checked' : 'Unchecked'}
+        onClick={onChange} />
 )
 
 const OptionFontFamily = (props) => {
@@ -93,9 +95,60 @@ const ToggleOptions = ({ isPastFeedEnabled, handleToggleOption_isPastFeedEnabled
         </ul>
     </div>
 )
+const OptionWordSpeed = () => {
+    const dropdownRef = useRef(null);
+    const buttonRefs = useRef([]);
+
+    const toggleDropdown = () => {
+        dropdownRef.current.classList.toggle('show');
+    }
+
+    const setWordSpeed = (index) => {
+
+    }
+
+    return (
+        <div className="feedr-word-speed">
+            <div className="feedr-font-controls" onChange={(e) => setWordSpeed(e.target.value)}>
+                <div className="speedometer-icon"><p>A...</p><img src='./assets/options/speedometerSlow.png' alt='word-speed-slow' /></div>
+                <ul>
+                    <li>
+                        <input type="radio" name="word-speed" value={1} />
+                        <p>1</p>
+                    </li>
+                    <li>
+                        <input type="radio" name="word-speed" value={1.1} />
+                        <p>1.1</p>
+                    </li>
+                    <li>
+                        <input type="radio" name="word-speed" value={1.2} />
+                        <p>1.2</p>
+                    </li>
+                    <li>
+                        <input type="radio" name="word-speed" value={1.3} />
+                        <p>1.3</p>
+                    </li>
+                    <li>
+                        <input type="radio" name="word-speed" value={1.4} />
+                        <p>1.4</p>
+                    </li>
+                </ul>
+                <div className="speedometer-icon"><p>ABC...</p><img src='./assets/options/speedometerFast.png' alt='word-speed-fast' /></div>
+            </div>
+        </div>
+    )
+}
 
 function FeedROptionsMenu(props) {
-    const { setFontFamily, setFontSize, isOptionsEnabled, isPastFeedEnabled, setIsPastFeedEnabled, radioButtonsRef } = props;
+    const {
+        setFontFamily,
+        setFontSize,
+        isOptionsEnabled,
+        isPastFeedEnabled,
+        setIsPastFeedEnabled,
+        radioButtonsRef,
+        setWordSpeed
+    } = props;
 
     const handleToggleOption_isPastFeedEnabled = () => {
         setIsPastFeedEnabled(!isPastFeedEnabled);
@@ -105,20 +158,8 @@ function FeedROptionsMenu(props) {
         <div className={`feedr-options-menu ${isOptionsEnabled ? 'show-options-menu-animation' : 'hide-options-menu-animation'}`}>
             <OptionFontFamily setFontFamily={setFontFamily} radioButtonsRef={radioButtonsRef} />
             <OptionFontSize setFontSize={setFontSize} />
-            <ToggleOptions 
-                isPastFeedEnabled={isPastFeedEnabled}
-                handleToggleOption_isPastFeedEnabled={handleToggleOption_isPastFeedEnabled}/>
-            {/* <div className="feedr-toggle-options">
-                <ul>
-                    <li>
-                        <CheckBox
-                            className='feedr-toggle-option'
-                            checked={isPastFeedEnabled}
-                            onChange={handleToggleOption_isPastFeedEnabled}
-                            imgs={{ checkedImg: './assets/options/historyEnabled.png', uncheckedImg: './assets/options/historyDisabled.png' }} />
-                    </li>
-                </ul>
-            </div> */}
+            <OptionWordSpeed setWordSpeed={setWordSpeed} />
+            <ToggleOptions isPastFeedEnabled={isPastFeedEnabled} handleToggleOption_isPastFeedEnabled={handleToggleOption_isPastFeedEnabled} />
         </div>
     )
 }
