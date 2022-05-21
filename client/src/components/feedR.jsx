@@ -87,13 +87,13 @@ function FeedR() {
                 data.append('file', file);
                 console.warn(file);
 
-                response = await axios.post(`/retrieve-file`, data);
+                response = await axios.post(`/retrieve/file`, data);
                 break;
             case 2:
                 console.log('POSTING RETRIEVE TEXT REQUEST!');
                 console.log('TEXT: ', text);
 
-                response = await axios.post('/retrieve-text', { text });
+                response = await axios.post('/retrieve/text', { text });
                 break;
             default:
                 console.error('Invalid request!');
