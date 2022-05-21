@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 
-import './feedROptions.css'
+import '../styles/feedROptions.css'
 
 const CheckBox = ({ className, checked, imgs, onChange }) => (
     <img

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
-import './feedR.css';
+
+import '../styles/feedR.css';
 
 import FeedReel from './feedReel';
 import FeedrControls from './feedrControls';
